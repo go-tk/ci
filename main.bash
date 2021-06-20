@@ -2,6 +2,7 @@ set_go_environment_variables() {
 	local go_version
 	go_version=$(sed --regexp-extended --quiet 's/.*([0-9]+)\.([0-9]+)\.[0-9]+.*/\1.\2/p' /usr/local/go/VERSION)
 	local go_cache_dir=${CI_CACHE_DIR}/go-${go_version}
+	export GOCACHE=${go_cache_dir}/build
 	export GOMODCACHE=${go_cache_dir}/mod
 	export GOBIN=$(go env GOPATH)/bin
 }
