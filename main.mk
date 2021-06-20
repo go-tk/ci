@@ -39,7 +39,7 @@ endif
 ifdef POST_LINT
 	trap "$(POST_LINT)" EXIT
 endif
-	$| $(filter-out -set_exit_status,$(GOLINT_FLAGS)) ./... | golint-filter
+	$| $(filter-out -set_exit_status,$(GOLINT_FLAGS)) ./... | $(CI_DIR)/golint-filter
 
 .PHONY: vet
 .ONESHELL:
