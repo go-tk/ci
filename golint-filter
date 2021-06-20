@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 exit_code=0
 while read suggestion; do
 	if [[ ${suggestion} =~ ^(.*/)?internal/.*\.go: ]]; then
