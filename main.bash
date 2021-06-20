@@ -40,10 +40,10 @@ _create_apk_cache_dir() {
 
 make_goals() {
 	if [[ -n ${PRE_MAKE:-} ]]; then
-		${PRE_MAKE}
+		eval ${PRE_MAKE}
 	fi
 	if [[ -n ${POST_MAKE:-} ]]; then
-		trap "${POST_MAKE}" EXIT
+		trap 'eval ${POST_MAKE}' EXIT
 	fi
 	make --no-builtin-rules --no-builtin-variables --file="${CI_DIR}/main.mk" ${DEBUG:+--debug} -- ${MAKE_GOALS:-}
 }

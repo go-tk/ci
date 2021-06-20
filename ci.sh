@@ -53,11 +53,11 @@ docker exec --user=ci:ci --interactive --tty "$(cat "${CI_CONTAINER_ID_FILE}")" 
 		git clone --branch '\'"${CI_GIT_BRANCH}"\'' --single-branch --depth=1 ${NDEBUG:+--quiet} '\'"${CI_GIT_REPO}"\'' "${CI_DIR}"
 	}
 
-	export SHELLOPTS
 	for ENV in "${@}"; do
 		export "${ENV}"
 	done
+	unset ENV
 	create_ci_cache_dir
 	create_ci_dir
-	exec bash "${CI_DIR}/main.bash"
+	source "${CI_DIR}/main.bash"
 ' -- "$@" DEBUG=${DEBUG} NDEBUG=${NDEBUG}
