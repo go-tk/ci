@@ -36,7 +36,8 @@ docker exec --user=ci:ci --interactive --tty "$(cat "${CI_CONTAINER_ID_FILE}")" 
 		local expiry_time_file=${CI_CACHE_DIR}/expiry-time
 		if [[ -f "${expiry_time_file}" && "$(<"${expiry_time_file}")" -lt "$(date +%s)" ]]; then
 			find "${CI_CACHE_DIR}" -type d ! -perm -u+rwx -exec chmod -u+rwx {} \;
-			rm --recursive --force "${CI_CACHE_DIR}"
+			find "${CI_CACHE_DIR}" -mindepth 1 -maxdepth 1 ! -path "${expiry_time_file}" -exec rm --recursive --force {} \;
+			rm "${expiry_time_file}"
 		fi
 		if [[ -f "${expiry_time_file}" ]]; then
 			return

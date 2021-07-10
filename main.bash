@@ -15,7 +15,7 @@ install_alpine_packages() {
 	local apk_cache_dir
 	apk_cache_dir=$(_create_apk_cache_dir)
 	sudo apk add --no-progress ${NDEBUG:+--quiet} ${ALPINE_PACKAGES}
-	find "${apk_cache_dir}" ! \( -user "$(id --user)" -group "$(id --group)" \) -exec sudo chown "$(id --user):$(id --group)" {} \;
+	sudo find "${apk_cache_dir}" ! \( -user ci -group ci \) -exec chown ci:ci {} \;
 }
 
 _set_alpine_mirror() {
