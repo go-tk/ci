@@ -18,7 +18,7 @@ if [ ! -f "${CI_CONTAINER_ID_FILE}" ] || [ -z "$(docker ps --quiet --filter="id=
 	docker pull "${CI_IMAGE}"
 	docker run --rm --detach \
 		--volume=/var/run/docker.sock:/var/run/docker.sock \
-		--volume="${PWD}:/workspace" \
+		--volume="${XPWD:-${PWD}}:/workspace" \
 		--workdir=/workspace \
 		--cidfile="${CI_CONTAINER_ID_FILE}" \
 		"${CI_IMAGE}" sleep "${CI_CONTAINER_TTL}"
