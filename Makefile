@@ -1,10 +1,11 @@
 override SHELL := bash
 override .SHELLFLAGS := -eu$(if $(value DEBUG),x)o pipefail -c
 
-override BASE_DIR := $(abspath .ci.v1)
-override GO_VERSION := $(shell go version | grep --perl-regexp --only-matching '(?<=go)\d+\.\d+')
-export override GOMODCACHE := $(BASE_DIR)/cache/go$(GO_VERSION)/mod
-export override GOCACHE := $(BASE_DIR)/cache/go$(GO_VERSION)/build
+override base_dir := .ci.v1
+override go_version := $(shell go version | grep --perl-regexp --only-matching '(?<=go)\d+\.\d+')
+
+export override GOMODCACHE := $(abspath $(base_dir))/cache/go$(go_version)/mod
+export override GOCACHE := $(abspath $(base_dir))/cache/go$(go_version)/build
 
 .SILENT:
 .ONESHELL:
@@ -20,7 +21,7 @@ generate:
 all: generate
 
 .PHONY: fmt
-fmt: | $(BASE_DIR)/bin/goimports
+fmt: | $(base_dir)/bin/goimports
 	$(value PRE_FMT)
 	go fmt -n ./... |
 		grep --perl-regexp --only-matching --null-data '(?<= -l -w ).+(?=\n)' |
@@ -29,7 +30,7 @@ fmt: | $(BASE_DIR)/bin/goimports
 all: fmt
 
 .PHONY: lint
-lint: | $(BASE_DIR)/bin/golint
+lint: | $(base_dir)/bin/golint
 	$(value PRE_LINT)
 	$| $${GOLINT_FLAGS:+$${GOLINT_FLAGS/-set_exit_status/}} ./... | /ci/golint-filter
 	$(value POST_LINT)
@@ -55,8 +56,8 @@ clean:
 	go clean $${GO_CLEAN_FLAGS:-} ./...
 	$(value POST_CLEAN)
 
-$(BASE_DIR)/bin/goimports:
-	GOBIN=$(BASE_DIR)/bin go install $(if $(value DEBUG),-v) golang.org/x/tools/cmd/goimports@latest
+$(base_dir)/bin/goimports:
+	GOBIN=$(base_dir)/bin go install $(if $(value DEBUG),-v) golang.org/x/tools/cmd/goimports@latest
 
-$(BASE_DIR)/bin/golint:
-	GOBIN=$(BASE_DIR)/bin go install $(if $(value DEBUG),-v) golang.org/x/lint/golint@latest
+$(base_dir)/bin/golint:
+	GOBIN=$(base_dir)/bin go install $(if $(value DEBUG),-v) golang.org/x/lint/golint@latest
