@@ -5,10 +5,9 @@ set -euo pipefail
 exit_code=0
 while read suggestion; do
 	if [[ ${suggestion} =~ ^(.*/)?internal/.*\.go: ]]; then
-		echo "${suggestion}"
-		# go file in internal package
+		# go files in internal packages
 		if [[ ${suggestion} =~ exported\ .*\ should\ have\ comment\ or\ be\ unexported ]]; then
-			# ignore this suggestion
+			# ignore suggestions
 			continue
 		fi
 	fi
