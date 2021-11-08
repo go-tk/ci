@@ -11,4 +11,4 @@ docker run --user="$(id -u):$(id -g)" --rm --interactive --tty \
 	--env=DEBUG=${DEBUG} \
 	--env=NDEBUG=${NDEBUG} \
 	--env="XPWD=${XPWD}" \
-	ghcr.io/go-tk/ci:v1.0.0 make "${@}"
+	ghcr.io/go-tk/ci:v1.1.0 make "${@}"
