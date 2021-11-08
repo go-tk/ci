@@ -20,7 +20,7 @@ generate:
 all: generate
 
 .PHONY: fmt
-fmt: $(BASE_DIR)/bin/goimports
+fmt: | $(BASE_DIR)/bin/goimports
 	$(value PRE_FMT)
 	go fmt -n ./... |
 		grep --perl-regexp --only-matching --null-data '(?<= -l -w ).+(?=\n)' |
@@ -29,7 +29,7 @@ fmt: $(BASE_DIR)/bin/goimports
 all: fmt
 
 .PHONY: lint
-lint: $(BASE_DIR)/bin/golint
+lint: | $(BASE_DIR)/bin/golint
 	$(value PRE_LINT)
 	$| $${GOLINT_FLAGS:+$${GOLINT_FLAGS/-set_exit_status/}} ./... | /ci/golint-filter
 	$(value POST_LINT)
