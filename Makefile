@@ -10,6 +10,7 @@ export override GOCACHE := $(BASE_DIR)/cache/go$(GO_VERSION)/build
 .ONESHELL:
 
 .PHONY: all
+all:
 
 .PHONY: generate
 generate:
