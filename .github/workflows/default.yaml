@@ -15,7 +15,6 @@ jobs:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    - run: >-
-        IMAGE=ghcr.io/go-tk/ci:${GITHUB_REF#refs/tags/} &&
-        docker build --tag="${IMAGE}" . &&
-        docker push "${IMAGE}"
+    - run: echo "image=ghcr.io/go-tk/ci:${GITHUB_REF#refs/tags/}" >>"${GITHUB_ENV}"
+    - run: docker build --tag="${{ env.image }}" .
+    - run: docker push "${{ env.image }}"
