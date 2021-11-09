@@ -57,7 +57,7 @@ clean:
 	$(value POST_CLEAN)
 
 $(base_dir)/bin/goimports:
-	GOBIN=$(base_dir)/bin go install $(if $(value DEBUG),-v) golang.org/x/tools/cmd/goimports@latest
+	GOBIN=$(abspath $(base_dir))/bin go install $(if $(value DEBUG),-v) golang.org/x/tools/cmd/goimports@latest
 
 $(base_dir)/bin/golint:
-	GOBIN=$(base_dir)/bin go install $(if $(value DEBUG),-v) golang.org/x/lint/golint@latest
+	GOBIN=$(abspath $(base_dir))/bin go install $(if $(value DEBUG),-v) golang.org/x/lint/golint@latest
