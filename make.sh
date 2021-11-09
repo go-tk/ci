@@ -11,4 +11,4 @@ docker run --user="$(id -u):$(id -g)" --rm --interactive $([ ! -t 1 ] || echo --
 	--env=DEBUG=${DEBUG} \
 	--env=NDEBUG=${NDEBUG} \
 	--env="XPWD=${XPWD}" \
-	ghcr.io/go-tk/ci:v1.1.6 make ${DEBUG:+--trace} "${@}"
+	ghcr.io/go-tk/ci:v1.1.7 make ${DEBUG:+--trace} "${@}"
