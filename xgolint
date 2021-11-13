@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+set -eu${DEBUG:+x}o pipefail
+
+if [[ ! -f ${CACHE_DIR}/bin/golint ]]; then
+	GOBIN=${CACHE_DIR}/bin go install ${DEBUG:+-v} golang.org/x/lint/golint@latest
+fi
+
+ARGS=()
+for ARG in "${@}"; do
+	if [[ ${ARG} = -set_exit_status ]]; then
+		continue
+	fi
+	ARGS+=("${ARG}")
+done
+
+SUGGESTIONS=$("${CACHE_DIR}/bin/golint" "${ARGS[@]}")
+if [[ ${#SUGGESTIONS} -eq 0 ]]; then
+	exit
+fi
+readarray -t SUGGESTIONS <<<"${SUGGESTIONS}"
+
+EXIT_CODE=
+for SUGGESTION in "${SUGGESTIONS[@]}"; do
+	if [[ ${SUGGESTION} =~ ^(.*/)?internal/.*\.go: ]]; then
+		if [[ ${SUGGESTION} =~ exported\ .*\ should\ have\ comment\ or\ be\ unexported ]]; then
+			continue
+		fi
+	fi
+	echo "${SUGGESTION}"
+	EXIT_CODE=1
+done
+exit ${EXIT_CODE}

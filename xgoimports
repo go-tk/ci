@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+set -eu${DEBUG:+x}o pipefail
+
+if [[ ! -f ${CACHE_DIR}/bin/goimports ]]; then
+	GOBIN=${CACHE_DIR}/bin go install ${DEBUG:+-v} golang.org/x/tools/cmd/goimports@latest
+fi
+
+FLAGS=()
+SOURCES=
+for ARG in "${@}"; do
+	if [[ ${ARG} = -- ]]; then
+		NO_MORE_FLAGS=
+		continue
+	fi
+	if [[ ! -v NO_MORE_FLAGS && ${ARG} = -* ]]; then
+		FLAGS+=("${ARG}")
+	else
+		SOURCES+=$(go fmt -n -- "${ARG}" | cut --delimiter=' ' --fields=4-)$'\n'
+	fi
+done
+
+if [[ ${#SOURCES} -eq 0 ]]; then
+	"${CACHE_DIR}/bin/goimports" "${FLAGS[@]}"
+else
+	xargs --delimiter='\n' \
+		-- "${BASH}" ${DEBUG:+-x} -c '"${@}" || exit 255' \
+		-- "${CACHE_DIR}/bin/goimports" "${FLAGS[@]}" \
+		-- <<<"${SOURCES%$'\n'}"
+fi
