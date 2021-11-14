@@ -12,4 +12,4 @@ docker run --user="$(id -u):$(id -g)" --rm --interactive ${TTY:+--tty} \
 	--env=DEBUG=${DEBUG} \
 	--env=NDEBUG=${NDEBUG} \
 	--env="XPWD=${XPWD}" \
-	ghcr.io/go-tk/ci:v1.1.8 make ${DEBUG:+--trace} "${@}"
+	ghcr.io/go-tk/ci:v1.1.9 make ${DEBUG:+--trace} "${@}"
