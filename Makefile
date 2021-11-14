@@ -14,8 +14,14 @@ export override GOCACHE := $(CACHE_DIR)/go$(go_version)/build
 default:
 .PHONY: default
 
+override define cmd =
+	$(pre_cmd)
+	$(program) $(flags) $(targets)
+	$(post_cmd)
+endef
+
 include \
-	$(BASE_DIR)/generate.mk \
+	$(BASE_DIR)/gen.mk \
 	$(BASE_DIR)/fmt.mk \
 	$(BASE_DIR)/fmtmod.mk \
 	$(BASE_DIR)/lint.mk \

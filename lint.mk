@@ -1,13 +1,11 @@
-override lint_prog := $(or $(value LINT_PROG),$(BASE_DIR)/xgolint)
-override lint_flags := $(value LINT_FLAGS)
-override pre_lint := $(value PRE_LINT)
-override post_lint := $(value POST_LINT)
-
 ## lint:
 ##     Check the code style.
+lint: override program := $(or $(value LINT_PROGRAM),$(BASE_DIR)/xgolint)
+lint: override flags := $(value LINT_FLAGS)
+lint: override targets := $(or $(value LINT_TARGETS),./...)
+lint: override pre_cmd := $(value PRE_LINT)
+lint: override post_cmd := $(value POST_LINT)
 lint:
-	$(pre_lint)
-	$(lint_prog) $(lint_flags) ./...
-	$(post_lint)
+	$(cmd)
 .PHONY: lint
 default: lint

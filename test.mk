@@ -1,13 +1,11 @@
-override test_prog := $(or $(value TEST_PROG),go test)
-override test_flags := $(value TEST_FLAGS)
-override pre_test := $(value PRE_TEST)
-override post_test := $(value POST_TEST)
-
 ## test:
 ##     Run tests.
+test: override program := $(or $(value TEST_PROGRAM),go test)
+test: override flags := $(value TEST_FLAGS)
+test: override targets := $(or $(value TEST_TARGETS),./...)
+test: override pre_cmd := $(value PRE_TEST)
+test: override post_cmd := $(value POST_TEST)
 test:
-	$(pre_test)
-	$(test_prog) $(test_flags) ./...
-	$(post_test)
+	$(cmd)
 .PHONY: test
 default: test
