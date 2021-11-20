@@ -15,4 +15,4 @@ RUN apk add --no-cache \
         sed \
     ;
 
-ADD . /ci
+COPY . /ci
