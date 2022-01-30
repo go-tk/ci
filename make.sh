@@ -19,7 +19,7 @@ COMMAND=${COMMAND}' \
 if [ -f "${HOME}/.docker/config.json" ]; then
 	COMMAND=${COMMAND}' \
 --volume="${HOME}/.docker/config.json:/etc/docker/config.json" \
---env=DOCKER_CONFIG=/etc/docker/config.json'
+--env=DOCKER_CONFIG=/etc/docker'
 fi
 
 COMMAND=${COMMAND}' ghcr.io/go-tk/ci:v1.3.2 make ${DEBUG:+--trace} "${@}"'
