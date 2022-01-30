@@ -22,6 +22,6 @@ if [ -f "${HOME}/.docker/config.json" ]; then
 --env=DOCKER_CONFIG=/etc/docker/config.json'
 fi
 
-COMMAND=${COMMAND}' ghcr.io/go-tk/ci:v1.3.1 make ${DEBUG:+--trace} "${@}"'
+COMMAND=${COMMAND}' ghcr.io/go-tk/ci:v1.3.2 make ${DEBUG:+--trace} "${@}"'
 
 eval "${COMMAND}"
