@@ -27,6 +27,7 @@ include \
 	$(BASE_DIR)/lint.mk \
 	$(BASE_DIR)/vet.mk \
 	$(BASE_DIR)/test.mk \
+	$(if $(value IMAGE),$(BASE_DIR)/build.mk) \
 	$(BASE_DIR)/clean.mk \
 	$(additional_makefiles)
 
