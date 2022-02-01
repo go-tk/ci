@@ -22,9 +22,11 @@ LABEL\
  git-commit=${GIT_COMMIT@Q}\
  go-version=${GO_VERSION@Q}
 
-COPY . /opt/${PROJECT@Q}/bin
+ENV\
+ IMAGE=${IMAGE@Q}\
+ PATH=/opt/${PROJECT@Q}/bin:${PATH}
 
-ENV PATH=/opt/${PROJECT@Q}/bin:${PATH}
+COPY . /opt/${PROJECT@Q}/bin
 EOF
 
 rm --recursive --force "${CONTEXT_DIR}"
