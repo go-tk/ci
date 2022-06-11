@@ -10,14 +10,16 @@ COMMAND=${COMMAND}'\
  --volume=/var/run/docker.sock:/var/run/docker.sock\
  --volume="${XPWD:-${PWD}}:${PWD}"\
  --workdir="${PWD}"\
-${DEBUG+ --env=DEBUG=}
+${DEBUG+ --env=DEBUG=}\
+'
 
 if [ -f "${HOME}/.docker/config.json" ]; then
-	COMMAND=${COMMAND}' \
---volume="${HOME}/.docker/config.json:/etc/docker/config.json" \
---env=DOCKER_CONFIG=/etc/docker'
+	COMMAND=${COMMAND}'\
+ --volume="${HOME}/.docker/config.json:/etc/docker/config.json"\
+ --env=DOCKER_CONFIG=/etc/docker\
+'
 fi
 
 COMMAND=${COMMAND}' ghcr.io/go-tk/ci:v1.5.2 make ${DEBUG+--trace} "${@}"'
 
-${COMMAND}
+eval "${COMMAND}"
