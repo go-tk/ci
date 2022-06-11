@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-set -eu${DEBUG:+x}o pipefail
+set -eu${DEBUG+x}o pipefail
 
 if [[ ! -f ${CACHE_DIR}/bin/goimports ]]; then
-	GOBIN=${CACHE_DIR}/bin go install ${DEBUG:+-v} golang.org/x/tools/cmd/goimports@latest
+	GOBIN=${CACHE_DIR}/bin go install ${DEBUG+-v} golang.org/x/tools/cmd/goimports@latest
 fi
 
 FLAGS=()
@@ -16,22 +16,25 @@ for ARG in "${@}"; do
 	if [[ ! -v NO_MORE_FLAGS && ${ARG} = -* ]]; then
 		FLAGS+=("${ARG}")
 	else
-		SOURCES+=$(go fmt -n -- "${ARG}" | cut --delimiter=' ' --fields=4-)$'\n'
+		TEMP=$(go fmt -n -- "${ARG}" | cut --delimiter=' ' --fields=4-)
+		if [[ ${#TEMP} -ge 1 ]]; then
+			SOURCES+=${SOURCES:+$'\n'}${TEMP}
+		fi
 	fi
 done
 
 if [[ ${#SOURCES} -ge 1 ]]; then
 	SOURCES=$(xargs --delimiter='\n' \
-		-- "${BASH}" ${DEBUG:+-x} -c '"${@}" || [[ ${?} -eq 1 ]] || exit 255' \
+		-- "${BASH}" ${DEBUG+-x} -c '"${@}" || [[ ${?} -eq 1 ]] || exit 255' \
 		-- grep --perl-regexp --files-without-match '^// Code generated .* DO NOT EDIT\.$' \
-		-- <<<"${SOURCES%$'\n'}")
+		-- <<<${SOURCES})
 fi
 
 if [[ ${#SOURCES} -eq 0 ]]; then
 	"${CACHE_DIR}/bin/goimports" "${FLAGS[@]}"
 else
 	xargs --delimiter='\n' \
-		-- "${BASH}" ${DEBUG:+-x} -c '"${@}" || exit 255' \
+		-- "${BASH}" ${DEBUG+-x} -c '"${@}" || exit 255' \
 		-- "${CACHE_DIR}/bin/goimports" "${FLAGS[@]}" \
-		-- <<<"${SOURCES}"
+		-- <<<${SOURCES}
 fi

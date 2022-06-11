@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-set -eu${DEBUG:+x}o pipefail
+set -eu${DEBUG+x}o pipefail
 
 if [[ ! -f ${CACHE_DIR}/bin/golint ]]; then
-	GOBIN=${CACHE_DIR}/bin go install ${DEBUG:+-v} golang.org/x/lint/golint@latest
+	GOBIN=${CACHE_DIR}/bin go install ${DEBUG+-v} golang.org/x/lint/golint@latest
 fi
 
 ARGS=()
@@ -15,12 +15,9 @@ for ARG in "${@}"; do
 done
 
 SUGGESTIONS=$("${CACHE_DIR}/bin/golint" "${ARGS[@]}")
-if [[ ${#SUGGESTIONS} -eq 0 ]]; then
-	exit
-fi
-readarray -t SUGGESTIONS <<<"${SUGGESTIONS}"
+[[ ${#SUGGESTIONS} -eq 0 ]] && SUGGESTIONS=() || readarray -t SUGGESTIONS <<<${SUGGESTIONS}
 
-EXIT_CODE=
+EXIT_CODE=0
 for SUGGESTION in "${SUGGESTIONS[@]}"; do
 	if [[ ${SUGGESTION} =~ ^(.*/)?internal/.*\.go: ]]; then
 		if [[ ${SUGGESTION} =~ exported\ .*\ should\ have\ comment\ or\ be\ unexported ]]; then

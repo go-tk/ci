@@ -1,7 +1,4 @@
-set -eu${DEBUG:+x}
-
-DEBUG=${DEBUG:+1}
-NDEBUG=$([ -n "${DEBUG}" ] || echo 1)
+set -eu${DEBUG+x}
 
 COMMAND='docker run --user="$(id -u):$(id -g)" --rm --interactive'
 
@@ -9,12 +6,11 @@ if [ -t 1 ]; then
 	COMMAND=${COMMAND}' --tty'
 fi
 
-COMMAND=${COMMAND}' \
---volume=/var/run/docker.sock:/var/run/docker.sock \
---volume="${XPWD:-${PWD}}:${PWD}" \
---workdir="${PWD}" \
---env=DEBUG=${DEBUG} \
---env=NDEBUG=${NDEBUG}'
+COMMAND=${COMMAND}'\
+ --volume=/var/run/docker.sock:/var/run/docker.sock\
+ --volume="${XPWD:-${PWD}}:${PWD}"\
+ --workdir="${PWD}"\
+${DEBUG+ --env=DEBUG=}
 
 if [ -f "${HOME}/.docker/config.json" ]; then
 	COMMAND=${COMMAND}' \
@@ -22,6 +18,6 @@ if [ -f "${HOME}/.docker/config.json" ]; then
 --env=DOCKER_CONFIG=/etc/docker'
 fi
 
-COMMAND=${COMMAND}' ghcr.io/go-tk/ci:v1.5.1 make ${DEBUG:+--trace} "${@}"'
+COMMAND=${COMMAND}' ghcr.io/go-tk/ci:v1.5.1 make ${DEBUG+--trace} "${@}"'
 
-eval "${COMMAND}"
+${COMMAND}

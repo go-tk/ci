@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -eu${DEBUG:+x}o pipefail
+set -eu${DEBUG+x}o pipefail
 
 MAKEFILES=("${@}")
 DEFAULT_TARGETS=$(sed --regexp-extended --silent 's/^default:\s*(.+)/\1/p' "${MAKEFILES[@]}" | tr '\n' ' ')
