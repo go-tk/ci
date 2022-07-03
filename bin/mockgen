@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -eu${DEBUG+x}o pipefail
+
+if [[ ! -f ${CACHE_DIR}/bin/mockgen ]]; then
+	GOBIN=${CACHE_DIR}/bin go install ${DEBUG+-v} github.com/golang/mock/mockgen@latest
+fi
+
+exec "${CACHE_DIR}/bin/mockgen" "${@}"
