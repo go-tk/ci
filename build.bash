@@ -1,7 +1,3 @@
-#!/usr/bin/env bash
-
-set -eu${DEBUG+x}o pipefail
-
 CONTEXT_DIR=$(mktemp --directory)
 MAIN_PACKAGES=$(go list -f '{{- if eq .Name "main"}}{{- .ImportPath}}{{"\n"}}{{- end}}' ./... | grep --perl-regexp '.+')
 readarray -t MAIN_PACKAGES <<<${MAIN_PACKAGES}
@@ -15,7 +11,7 @@ fi
 
 GIT_REPO_URL=$(git remote get-url origin)
 GIT_COMMIT=$(git rev-parse HEAD)
-GO_VERSION=$(go version | grep --perl-regexp --only-matching '(?<=go)\d+\.\d+')
+GO_VERSION=$(go version | grep --perl-regexp --only-matching --max-count=1 '(?<=go)\d+\.\d+')
 PROJECT=$(basename "${GIT_REPO_URL}" .git)
 docker build --file=- --tag="${IMAGE}" "${CONTEXT_DIR}" <<EOF
 FROM alpine:3.15

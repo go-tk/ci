@@ -31,10 +31,10 @@ if [[ ${#SOURCES} -ge 1 ]]; then
 fi
 
 if [[ ${#SOURCES} -eq 0 ]]; then
-	"${CACHE_DIR}/bin/goimports" "${FLAGS[@]}"
-else
-	xargs --delimiter='\n' \
-		-- "${BASH}" ${DEBUG+-x} -c '"${@}" || exit 255' \
-		-- "${CACHE_DIR}/bin/goimports" "${FLAGS[@]}" \
-		-- <<<${SOURCES}
+	exec "${CACHE_DIR}/bin/goimports" "${FLAGS[@]}"
 fi
+
+xargs --delimiter='\n' \
+	-- "${BASH}" ${DEBUG+-x} -c '"${@}" || exit 255' \
+	-- "${CACHE_DIR}/bin/goimports" "${FLAGS[@]}" \
+	-- <<<${SOURCES}

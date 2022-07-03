@@ -1,6 +1,6 @@
 ## build:
 ##     Build a docker image.
-build: override program := $(or $(value BUILD_PROGRAM),$(BASE_DIR)/build)
+build: override program := $(or $(value BUILD_PROGRAM),source $(BASE_DIR)/build.bash)
 build: override flags := $(value BUILD_FLAGS)
 build: override targets := $(value BUILD_TARGETS)
 build: override pre_cmd := $(value PRE_BUILD)

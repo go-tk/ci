@@ -8,8 +8,13 @@ fi
 
 ARGS=()
 for ARG in "${@}"; do
-	if [[ ${ARG} = -set_exit_status ]]; then
-		continue
+	if [[ ${ARG} = -- ]]; then
+		NO_MORE_FLAGS=
+	else
+		if [[ ! -v NO_MORE_FLAGS && ${ARG} = -set_exit_status ]]; then
+			SET_EXIT_STATUS=
+			continue
+		fi
 	fi
 	ARGS+=("${ARG}")
 done
@@ -17,14 +22,17 @@ done
 SUGGESTIONS=$("${CACHE_DIR}/bin/golint" "${ARGS[@]}")
 [[ ${#SUGGESTIONS} -eq 0 ]] && SUGGESTIONS=() || readarray -t SUGGESTIONS <<<${SUGGESTIONS}
 
-EXIT_CODE=0
+EXIT_STATUS=0
 for SUGGESTION in "${SUGGESTIONS[@]}"; do
 	if [[ ${SUGGESTION} =~ ^(.*/)?internal/.*\.go: ]]; then
-		if [[ ${SUGGESTION} =~ exported\ .*\ should\ have\ comment\ or\ be\ unexported ]]; then
+		if [[ ${SUGGESTION} =~ exported\ .*\ should\ have\ comment ]]; then
 			continue
 		fi
 	fi
 	echo "${SUGGESTION}"
-	EXIT_CODE=1
+	EXIT_STATUS=1
 done
-exit ${EXIT_CODE}
+
+if [[ -v SET_EXIT_STATUS ]]; then
+	exit ${EXIT_STATUS}
+fi

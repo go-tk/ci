@@ -2,11 +2,11 @@ override SHELL := bash
 override .SHELLFLAGS := -eu$(if $(value DEBUG),x)o pipefail -c
 
 export override BASE_DIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
+export override PATH := $(BASE_DIR)/bin:$(PATH)
 export override CACHE_DIR := $(abspath .cache/ci.v1)
-
-override go_version := $(shell go version | grep --perl-regexp --only-matching '(?<=go)\d+\.\d+')
+override go_version := $(shell go version | grep --perl-regexp --only-matching --max-count=1 '(?<=go)\d+\.\d+')
 ifneq ($(.SHELLSTATUS),0)
-$(error go version retrieval failed)
+$(error failed to get go version)
 endif
 export override GOMODCACHE := $(CACHE_DIR)/go$(go_version)/mod
 export override GOCACHE := $(CACHE_DIR)/go$(go_version)/build
@@ -32,5 +32,5 @@ include \
 	$(additional_makefiles)
 
 help:
-	@$(BASE_DIR)/help $(MAKEFILE_LIST)
+	@source $(BASE_DIR)/help.bash $(MAKEFILE_LIST)
 .PHONY: help
