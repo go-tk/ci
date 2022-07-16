@@ -1,5 +1,6 @@
 override SHELL := bash
-override .SHELLFLAGS := -eu$(if $(value DEBUG),x)o pipefail -c
+override .SHELLFLAGS := -c
+override .SHELLFLAGS := $(shell echo -eu$${DEBUG+x}o pipefail) $(.SHELLFLAGS)
 
 export override BASE_DIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 export override PATH := $(BASE_DIR)/bin:$(PATH)
