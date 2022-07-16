@@ -1,21 +1,20 @@
-name: v1
+name: ci
 defaults:
   run:
     shell: bash
 on:
   push:
     tags:
-    - v1.*
+    - v*
 jobs:
-  build:
+  build_and_release:
     runs-on: ubuntu-latest
     steps:
-    - run: echo "image=ghcr.io/go-tk/ci:${GITHUB_REF#refs/tags/}" >>"${GITHUB_ENV}"
     - uses: actions/checkout@v2
-    - run: docker build --tag='${{ env.image }}' .
     - uses: docker/login-action@v1
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    - run: docker push '${{ env.image }}'
+    - run: echo "image=ghcr.io/go-tk/ci:${GITHUB_REF#refs/tags/}" >>"${GITHUB_ENV}"
+    - run: docker build --tag='${{ env.image }}' . && docker push '${{ env.image }}'
