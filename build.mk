@@ -8,4 +8,3 @@ build: override post_cmd := $(value POST_BUILD)
 build:
 	$(cmd)
 .PHONY: build
-default: build

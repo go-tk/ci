@@ -1,6 +1,6 @@
 override SHELL := bash
 override .SHELLFLAGS := -c
-override .SHELLFLAGS := $(shell echo -eu$${DEBUG+x}o pipefail) $(.SHELLFLAGS)
+override .SHELLFLAGS := $(shell echo '-eu$${DEBUG+x}o pipefail') $(.SHELLFLAGS)
 
 export override BASE_DIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 export override PATH := $(BASE_DIR)/bin:$(PATH)
@@ -28,7 +28,8 @@ include \
 	$(BASE_DIR)/lint.mk \
 	$(BASE_DIR)/vet.mk \
 	$(BASE_DIR)/test.mk \
-	$(if $(value IMAGE),$(BASE_DIR)/build.mk) \
+	$(BASE_DIR)/build.mk \
+	$(BASE_DIR)/release.mk \
 	$(BASE_DIR)/clean.mk \
 	$(additional_makefiles)
 

@@ -10,19 +10,20 @@ if [[ -d etc ]]; then
 fi
 
 GIT_REPO_URL=$(git remote get-url origin)
-GIT_COMMIT=$(git rev-parse HEAD)
-GO_VERSION=$(go version | grep --perl-regexp --only-matching --max-count=1 '(?<=go)\d+\.\d+')
 PROJECT=$(basename "${GIT_REPO_URL}" .git)
-docker build --file=- --tag="${IMAGE}" "${CONTEXT_DIR}" <<EOF
+docker build \
+	--file=- \
+	--tag="${IMAGE}" \
+	--label=org.opencontainers.image.created="$(date --rfc-3339=date)" \
+	--label=org.opencontainers.image.authors="$(git log -1 --pretty=format:'%an <%ae>')" \
+	--label=org.opencontainers.image.source="${GIT_REPO_URL}" \
+	--label=org.opencontainers.image.revision="$(git rev-parse HEAD)" \
+	--label=org.opencontainers.image.ref.name="${IMAGE}" \
+	--label=go.version="$(go version | grep --perl-regexp --only-matching --max-count=1 '(?<=go)\d+\.\d+')" \
+	"${CONTEXT_DIR}" \
+	<<EOF
 FROM alpine:3.15
-
-LABEL\
- git-repo-url=${GIT_REPO_URL@Q}\
- git-commit=${GIT_COMMIT@Q}\
- go-version=${GO_VERSION@Q}
-
 ENV IMAGE=${IMAGE@Q}
-
 COPY . /opt/${PROJECT@Q}
 WORKDIR /opt/${PROJECT@Q}
 EOF
