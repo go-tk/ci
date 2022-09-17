@@ -11,17 +11,14 @@ fi
 
 GIT_REPO_URL=$(git remote get-url origin)
 PROJECT=$(basename "${GIT_REPO_URL}" .git)
-docker build \
-	--file=- \
-	--tag="${IMAGE}" \
-	--label=org.opencontainers.image.created="$(date --rfc-3339=date)" \
-	--label=org.opencontainers.image.authors="$(git log -1 --pretty=format:'%an <%ae>')" \
-	--label=org.opencontainers.image.source="${GIT_REPO_URL}" \
-	--label=org.opencontainers.image.revision="$(git rev-parse HEAD)" \
-	--label=org.opencontainers.image.ref.name="${IMAGE}" \
-	--label=go.version="$(go version | grep --perl-regexp --only-matching --max-count=1 '(?<=go)\d+\.\d+')" \
-	"${CONTEXT_DIR}" \
-	<<EOF
+LABELS=()
+LABELS+=("org.opencontainers.image.created=$(date --rfc-3339=date)")
+LABELS+=("org.opencontainers.image.authors=$(git log -1 --pretty=format:'%an <%ae>')")
+LABELS+=("org.opencontainers.image.source=${GIT_REPO_URL}")
+LABELS+=("org.opencontainers.image.revision=$(git rev-parse HEAD)")
+LABELS+=("org.opencontainers.image.ref.name=${IMAGE}")
+LABELS+=("go.version=$(go version | grep --perl-regexp --only-matching --max-count=1 '(?<=go)\d+\.\d+')")
+docker build --file=- --tag="${IMAGE}" "${LABELS[@]/#/--label=}" "${CONTEXT_DIR}" <<EOF
 FROM alpine:3.15
 ENV IMAGE=${IMAGE@Q}
 COPY . /opt/${PROJECT@Q}
