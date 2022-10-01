@@ -18,7 +18,7 @@ for ARG in "${@}"; do
 	else
 		TEMP=$(go fmt -n -- "${ARG}" | cut --delimiter=' ' --fields=4-)
 		if [[ ${#TEMP} -ge 1 ]]; then
-			SOURCES+=${SOURCES:+$'\n'}${TEMP}
+			SOURCES+=${SOURCES:+$'\n'}${TEMP// /$'\n'}
 		fi
 	fi
 done
