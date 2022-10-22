@@ -1,6 +1,6 @@
 CONTEXT_DIR=$(mktemp --directory)
 MAIN_PACKAGES=$(go list -f '{{- if eq .Name "main"}}{{- .ImportPath}}{{"\n"}}{{- end}}' ./... | grep --perl-regexp '.+')
-readarray -t MAIN_PACKAGES <<<${MAIN_PACKAGES}
+readarray -t MAIN_PACKAGES <<<"${MAIN_PACKAGES}"
 for MAIN_PACKAGE in "${MAIN_PACKAGES[@]}"; do
 	PROGRAM=$(basename "${MAIN_PACKAGE}")
 	CGO_ENABLED=0 go build "${@}" -o "${CONTEXT_DIR}/bin/${PROGRAM}" "${MAIN_PACKAGE}"

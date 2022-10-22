@@ -20,7 +20,7 @@ for ARG in "${@}"; do
 done
 
 SUGGESTIONS=$("${CACHE_DIR}/bin/golint" "${ARGS[@]}")
-[[ ${#SUGGESTIONS} -eq 0 ]] && SUGGESTIONS=() || readarray -t SUGGESTIONS <<<${SUGGESTIONS}
+[[ ${#SUGGESTIONS} -eq 0 ]] && SUGGESTIONS=() || readarray -t SUGGESTIONS <<<"${SUGGESTIONS}"
 
 EXIT_STATUS=0
 for SUGGESTION in "${SUGGESTIONS[@]}"; do
