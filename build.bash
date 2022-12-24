@@ -9,12 +9,11 @@ if [[ -d etc ]]; then
 	cp --recursive --no-target-directory etc "${CONTEXT_DIR}/etc"
 fi
 
-GIT_REPO_URL=$(git remote get-url origin)
-PROJECT=$(basename "${GIT_REPO_URL}" .git)
+PROJECT=$(basename "$(git remote get-url origin)" .git)
 LABELS=()
 LABELS+=("org.opencontainers.image.created=$(date --rfc-3339=date)")
 LABELS+=("org.opencontainers.image.authors=$(git log -1 --pretty=format:'%an <%ae>')")
-LABELS+=("org.opencontainers.image.source=${GIT_REPO_URL}")
+LABELS+=("org.opencontainers.image.source=$(git remote get-url origin)")
 LABELS+=("org.opencontainers.image.revision=$(git rev-parse HEAD)")
 LABELS+=("org.opencontainers.image.ref.name=${IMAGE}")
 LABELS+=("go.version=$(go version | grep --perl-regexp --only-matching --max-count=1 '(?<=go)\d+\.\d+')")
