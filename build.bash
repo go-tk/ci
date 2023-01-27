@@ -9,15 +9,16 @@ if [[ -d etc ]]; then
 	cp --recursive --no-target-directory etc "${CONTEXT_DIR}/etc"
 fi
 
+COMMAND=(docker build --file=- --tag="${IMAGE}")
+COMMAND+=(--label="org.opencontainers.image.created=$(date --rfc-3339=date)")
+COMMAND+=(--label="org.opencontainers.image.authors=$(git log -1 --pretty=format:'%an <%ae>')")
+COMMAND+=(--label="org.opencontainers.image.source=$(git remote get-url origin)")
+COMMAND+=(--label="org.opencontainers.image.revision=$(git rev-parse HEAD)")
+COMMAND+=(--label="org.opencontainers.image.ref.name=${IMAGE}")
+COMMAND+=(--label="go.version=$(go version | grep --perl-regexp --only-matching --max-count=1 '(?<=go)\d+\.\d+')")
+COMMAND+=("${CONTEXT_DIR}")
 PROJECT=$(basename "$(git remote get-url origin)" .git)
-LABELS=()
-LABELS+=("org.opencontainers.image.created=$(date --rfc-3339=date)")
-LABELS+=("org.opencontainers.image.authors=$(git log -1 --pretty=format:'%an <%ae>')")
-LABELS+=("org.opencontainers.image.source=$(git remote get-url origin)")
-LABELS+=("org.opencontainers.image.revision=$(git rev-parse HEAD)")
-LABELS+=("org.opencontainers.image.ref.name=${IMAGE}")
-LABELS+=("go.version=$(go version | grep --perl-regexp --only-matching --max-count=1 '(?<=go)\d+\.\d+')")
-docker build --file=- --tag="${IMAGE}" "${LABELS[@]/#/--label=}" "${CONTEXT_DIR}" <<EOF
+"${COMMAND[@]}" <<EOF
 FROM alpine:3.15
 ENV IMAGE=${IMAGE@Q}
 COPY . /opt/${PROJECT@Q}
