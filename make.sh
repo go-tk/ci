@@ -20,6 +20,6 @@ if [ -f "${HOME}/.docker/config.json" ]; then
 '
 fi
 
-COMMAND=${COMMAND}' ghcr.io/go-tk/ci:v1.8.0 make ${DEBUG+--trace} "${@}"'
+COMMAND=${COMMAND}' ghcr.io/go-tk/ci:v1.8.1 make ${DEBUG+--trace} "${@}"'
 
 eval "${COMMAND}"
