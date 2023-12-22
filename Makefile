@@ -7,7 +7,7 @@ export override PATH := $(BASE_DIR)/bin:$(PATH)
 export override CACHE_DIR := $(abspath .cache/ci.v1)
 override go_version := $(shell go version | grep --perl-regexp --only-matching --max-count=1 '(?<=go)\d+\.\d+')
 ifneq ($(.SHELLSTATUS),0)
-$(error failed to get go version)
+$(error failed to extract go version)
 endif
 export override GOMODCACHE := $(CACHE_DIR)/go$(go_version)/mod
 export override GOCACHE := $(CACHE_DIR)/go$(go_version)/build

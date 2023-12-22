@@ -19,7 +19,7 @@ COMMAND+=(--label="go.version=$(go version | grep --perl-regexp --only-matching 
 COMMAND+=("${CONTEXT_DIR}")
 PROJECT=$(basename "$(git remote get-url origin)" .git)
 "${COMMAND[@]}" <<EOF
-FROM alpine:3.15
+FROM alpine:3.18
 ENV IMAGE=${IMAGE@Q}
 COPY . /opt/${PROJECT@Q}
 WORKDIR /opt/${PROJECT@Q}

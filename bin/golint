@@ -6,7 +6,7 @@ if [[ ! -f ${CACHE_DIR}/bin/golint ]]; then
 	GOBIN=${CACHE_DIR}/bin go install ${DEBUG+-v} golang.org/x/lint/golint@latest
 fi
 
-ARGS=()
+FLAGS=()
 for ARG in "${@}"; do
 	if [[ ${ARG} = -- ]]; then
 		NO_MORE_FLAGS=
@@ -16,10 +16,10 @@ for ARG in "${@}"; do
 			continue
 		fi
 	fi
-	ARGS+=("${ARG}")
+	FLAGS+=("${ARG}")
 done
 
-SUGGESTIONS=$("${CACHE_DIR}/bin/golint" "${ARGS[@]}")
+SUGGESTIONS=$("${CACHE_DIR}/bin/golint" "${FLAGS[@]}")
 [[ ${#SUGGESTIONS} -eq 0 ]] && SUGGESTIONS=() || readarray -t SUGGESTIONS <<<"${SUGGESTIONS}"
 
 EXIT_STATUS=0
